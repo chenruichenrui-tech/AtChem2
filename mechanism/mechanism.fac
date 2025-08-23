@@ -1,0 +1,21 @@
+// 扩展的化学机制示例
+O2 = 2O;
+O + O2 = O3;
+NO + O3 = NO2 + O2;
+NO2 + hν = NO + O;
+CH4 + OH = CH3 + H2O;
+CH3 + O2 = CH3O2;
+CH3O2 + NO = CH3O + NO2;
+CH3O + O2 = HCHO + HO2;
+HCHO + hν = H2 + CO;
+HCHO + OH = HCO + H2O;
+HCO + O2 = HO2 + CO;
+CO + OH = CO2 + HO2;
+HO2 + NO = OH + NO2;
+HO2 + HO2 = H2O2 + O2;
+H2O2 + hν = 2OH;
+SO2 + OH = HOSO2;
+HOSO2 + O2 = HO2 + SO3;
+SO3 + H2O = H2SO4;
+C2H6 + OH = C2H5 + H2O;
+C3H8 + OH = C3H7 + H2O;
