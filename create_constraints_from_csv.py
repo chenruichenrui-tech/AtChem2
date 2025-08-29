@@ -1,8 +1,6 @@
 import csv
 import pathlib
 
-print("从 CSV 文件创建约束文件...")
-
 csvfile = '11.csv'
 constraints_dir = pathlib.Path('model/constraints/species')
 
@@ -34,34 +32,18 @@ species_mapping = {
 ppb2molec = 2.46e10
 
 # 读取CSV文件
-try:
-    with open(csvfile, newline='', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        rows = list(reader)
-    print(f"成功读取 {len(rows)} 行数据从 {csvfile}")
-except FileNotFoundError:
-    print(f"错误: 找不到文件 {csvfile}")
-    exit(1)
-except Exception as e:
-    print(f"读取CSV文件时出错: {e}")
-    exit(1)
+with open(csvfile, newline='', encoding='utf-8') as f:
+    reader = csv.DictReader(f)
+    rows = list(reader)
 
 # 为每个约束物种创建时间序列文件
 constrained_species = []
-constrained_config = 'model/configuration/speciesConstrained.config'
-try:
-    with open(constrained_config, 'r') as f:
-        for line in f:
-            if line.strip():
-                species = line.split()[0]
-                constrained_species.append(species)
-    print(f"需要创建约束文件的物种: {', '.join(constrained_species)}")
-except FileNotFoundError:
-    print(f"错误: 找不到文件 {constrained_config}")
-    exit(1)
+with open('model/configuration/speciesConstrained.config', 'r') as f:
+    for line in f:
+        if line.strip():
+            species = line.split()[0]
+            constrained_species.append(species)
 
-# 创建约束文件
-created_files = []
 for species in constrained_species:
     csv_column = species_mapping.get(species, species)
     
@@ -76,21 +58,11 @@ for species in constrained_species:
                     f.write(f"{time_sec} {val:.5e}\n")
                 except ValueError:
                     print(f"警告: 无法转换 {csv_column} 的值: {row[csv_column]}")
-                    # 使用speciesConstrained.config中的默认值
-                    default_val = None
-                    with open(constrained_config, 'r') as cfg:
-                        for cfg_line in cfg:
-                            if cfg_line.startswith(species):
-                                default_val = cfg_line.split()[1]
-                                break
-                    
-                    if default_val:
-                        time_sec = i * 3600
-                        f.write(f"{time_sec} {default_val}\n")
             else:
+                print(f"警告: 未找到列 {csv_column} 或值为空，使用默认值")
                 # 使用speciesConstrained.config中的默认值
                 default_val = None
-                with open(constrained_config, 'r') as cfg:
+                with open('model/configuration/speciesConstrained.config', 'r') as cfg:
                     for cfg_line in cfg:
                         if cfg_line.startswith(species):
                             default_val = cfg_line.split()[1]
@@ -99,8 +71,5 @@ for species in constrained_species:
                 if default_val:
                     time_sec = i * 3600
                     f.write(f"{time_sec} {default_val}\n")
-    
-    created_files.append(species)
 
-print(f"成功创建 {len(created_files)} 个约束文件: {', '.join(created_files)}")
 print("约束文件创建完成!")
